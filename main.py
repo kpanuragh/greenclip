@@ -96,23 +96,20 @@ class ItemEnterEventListener(EventListener):
 
         # you may want to return another list of results
 
-    def inner_action(self, image_path):
+    def inner_action(self, data):
         try:
-            print("Copying image to clipboard: " + image_path)
-            # Use xclip or xsel to copy image to clipboard
-            subprocess.run(
-                [
-                    "xclip",
-                    "-selection",
-                    "clipboard",
-                    "-t",
-                    "image/png",
-                    "-i",
-                    image_path,
-                ]
-            )
+            if os.path.exists(data):  # If it's an image path
+                print("Copying image to clipboard: " + data)
+                subprocess.run(
+                    ["xclip", "-selection", "clipboard", "-t", "image/png", "-i", data]
+                )
+            else:  # Assume it's text
+                print("Copying text to clipboard: " + data)
+                subprocess.run(
+                    ["xclip", "-selection", "clipboard"], input=data.encode("utf-8")
+                )
         except Exception as e:
-            print(f"Error copying image to clipboard: {e}")
+            print(f"Error copying to clipboard: {e}")
 
 
 if __name__ == "__main__":
